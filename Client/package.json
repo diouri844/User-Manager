@@ -9,6 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.10.2",
+    "bootstrap-vue": "^2.23.1",
+    "bootswatch": "^5.2.2",
+    "jquery": "^3.6.1",
+    "popper.js": "^1.16.1",
     "vue": "^3.2.41"
   },
   "devDependencies": {
