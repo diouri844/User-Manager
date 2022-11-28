@@ -1,64 +1,51 @@
-<script setup>
+<script>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
+import UserList from "../src/components/UserList.vue";
+
+export default {
+  components:{
+    UserList
+  }  
+}
+
+
 </script>
 
 <template>
-  <nav class="nav_content">
-    <div class="nav_logo">
-      <h3> VN UManager </h3>
+    <div>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" >VN UManager</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03"
+            aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarColor03">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Add User
+                  <span class="visually-hidden">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Delete User </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Update User</a>
+              </li>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-sm-2" type="text" placeholder="User Name or Id">
+              <button class="btn btn-secondary my-2 my-sm-0" type="submit">Find</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <UserList />
     </div>
-    <div class="nav_link">
-      <button class="btn_serve_add" > Create user </button>
-      <button class="btn_serve_remove" > Delete user  </button>
-      <button class="btn_serve_update"> Update  user </button>
-    </div>
-  </nav>
-  <hr class="line" />
 </template>
 
 <style scoped>
-.nav_content{
-  margin-top:1%;
-  margin-left: 7%;
-  display: flex;
-  align-content: space-between;
-  width:60%;
-}
-.nav_logo{
-  margin-right: 2%;
-  width:100%;
-  float: left;
-  left: 0;
-}
-.line{
-  opacity:0.3;
-  width:30%;
-  margin-left:38%;
-}
-.nav_link{
-  display: flex;
-  width:100%;
-  align-content:space-between;
-  background-color: transparent;
-}
-.btn_serve_add, .btn_serve_remove, .btn_serve_update{
-  font-size:15px;
-  margin-right:3%;
-  cursor:pointer;
-  width:100%;
-  height:auto;
-  color:white;
-  background-color: transparent;
-  border:none;
-  opacity: 0.;
-}
-.btn_serve_remove:hover , .btn_serve_remove:focus,
-.btn_serve_add:hover , .btn_serve_add:focus,
-.btn_serve_update:hover , .btn_serve_update:focus
-{
-  opacity: 0.7;
-  color: #eee;
-  transition: 0.7s;
-}
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css");
 </style>
