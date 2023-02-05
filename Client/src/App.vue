@@ -1,12 +1,17 @@
 <script>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import UserList from "../src/components/UserList.vue";
+import Login from "../src/components/Login.vue";
 
 export default {
   components:{
-    UserList
-  }  
+    UserList,
+    Login
+  },
+  data(){
+    return {
+      'isAth':false
+    }
+  }
 }
 
 
@@ -14,7 +19,7 @@ export default {
 
 <template>
     <div>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav v-show="this.isAth" class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" >VN UManager</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03"
@@ -42,7 +47,8 @@ export default {
           </div>
         </div>
       </nav>
-      <UserList />
+      <UserList v-if="this.isAth"/>
+      <Login key="!this.isAth" />
     </div>
 </template>
 
