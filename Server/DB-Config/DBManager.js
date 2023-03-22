@@ -1,61 +1,23 @@
-const sqlite = require('sqlite3').verbose();
-const path = require("path");
+
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 
 
+// create connexion  : 
 
-// create Db : 
-
-const CreateNewDataBase = ()=>{
-    const dbName = path.join(__dirname,"./","UserManager.db");
-    // create it : 
-    const Db = new sqlite.Database(
-        dbName,
-        err =>{
-            if ( err ){
-                return console.error("Naaah , error Create Db file :  "+err.message);
-            }
-        console.log("Successful connection to the database 'UserManager.db'");
-        }
-    );
-    // Db Created : Now Create Users Table : 
-    CreateUserTable(Db);
+const MakeConnexion = async ()=>{
+    // get my env uri : 
+    const db_uri =  process.env.MONGO_DB_URI;
+    // connect to uri target :
+    await mongoose.connect(
+        db_uri
+    ).then(
+        console.log(
+            " Coneected to Db-could let make sheet done !"
+        )
+    ).catch( err => console.error(" Cann not make connexion : ", err));
 };
-
-
-
-const GetDb = ()=> {
-    return new sqlite.Database(
-        path.join(__dirname,"./","UserManager.db"),
-        err =>{
-            if ( err ){
-                return console.error("Naaah , error Create Db file :  "+err.message);
-            }}
-    );
-}
-// Create User Table : 
-
-const CreateUserTable = (db_target)=>{
-    const QueryStatment = `
-        CREATE TABLE IF NOT EXISTS Users (
-        User_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        Name VARCHAR(100) NOT NULL,
-        Password VARCHAR(100) NOT NULL
-        );
-    `;
-    // run query : 
-    db_target.run(
-        QueryStatment,
-        err => {
-            if ( err ){
-                return console.error("Naaah , error Create Users Table :  "+err.message);
-            }
-            console.log("Successful creation of the 'Users' table");
-        }
-    );
-};
-
-
 
 
 
@@ -75,5 +37,5 @@ const CreateUserTable = (db_target)=>{
 
 
 module.exports = {
-    CreateNewDataBase,GetDb
+    MakeConnexion
 };
