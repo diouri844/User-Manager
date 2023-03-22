@@ -16,7 +16,8 @@ const bodyparser = require('body-parser');
 const AuthRouter = require('./Routes/Auth');
 
 
-const { CreateNewDataBase } = require('./DB-Config/DBManager');
+const { MakeConnexion  } = require("./DB-Config/DBManager");
+
 
 // create my server application : 
 
@@ -29,7 +30,9 @@ my_server.use(bodyparser.json())
 // use my auth router :
 
 
-my_server.use('/api/users',AuthRouter);
+my_server.use(
+    '/api/users',AuthRouter
+);
 
 
 
@@ -38,6 +41,6 @@ my_server.use('/api/users',AuthRouter);
 
 my_server.listen(8080, ()=> {
     console.log( "the shit happen  at http://localhost:8080  ");
-    CreateNewDataBase();
+    MakeConnexion();
 });
 
