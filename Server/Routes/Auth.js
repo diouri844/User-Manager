@@ -9,15 +9,22 @@ const Router = require('express').Router();
 
 const { InserNewUser } = require('../DB-Config/UserManager');
 
+
+
 // Login handler : 
 Router.post("/login",
     (req,res )=>{
         // get request body :
-        console.log(
-            req.body.name,
-            req.body.email,
-            req.body.password,
+        // export name email password from req.body :
+        const { name, email, password } = req.body;
+        // insert new User : 
+        const my_user = User(
+            name,
+            email,
+            password
         );
+        // trye to insert my user target : 
+
         res.send(
             {
                 action:'Login',
@@ -33,24 +40,20 @@ Router.post("/login",
 Router.post("/register",
     (req,res) =>{
         // get body : 
-        const new_user = new User(
-            req.body.name,
-            req.body.password
+        const { name ,password, role } = req.body;
+        const response = InserNewUser(
+            name,
+            password,
+            role
         );
-        const response = InserNewUser(new_user);
-        if ( response ){
-            res.send(
-                response
-            );
-        }
         res.send(
-            {
-                state:200,
-                user:new_user,
-                created:true
-            }
-        )
-    }
+                {
+                    state:response.state,
+                    user:response.new_user,
+                    created:response.state === 200
+                }
+                );
+        }
 );
 
 
