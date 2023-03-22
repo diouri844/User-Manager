@@ -1,7 +1,9 @@
 
 
-const crypto = require('crypto');
-const  User = class {
+//const crypto = require('crypto');
+
+// define user object :
+/*const  User = class {
     constructor(name,password){
         this.name = name;
         this.password = password
@@ -18,10 +20,43 @@ const  User = class {
         const hash = sha256.update(this.password).digest('base64');
         return hash;
     }
-}
+}*/
+
+const UserRole =  {
+    user:"User",
+    stuff:"Stuff",
+    admin:"Admin"
+};
 
 
+// Require Mongoose
+const mongoose = require("mongoose");
+
+// Define a schema
 
 
+const UserSchema = mongoose.Schema({
+    name: {
+        type:String,
+        required:true
+    },
+    role:{
+        type:String,
+        required:true
+    },
+    token:{
+        type: String,
+        required:false
+    },
+    password: {
+        type:String,
+        required:true
+    }
+});
 
-module.exports = User;
+const User = mongoose.model("User",UserSchema);
+// define my modal and use my pre-difinate schema : 
+module.exports = {
+    User,
+    UserSchema
+};
