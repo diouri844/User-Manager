@@ -1,67 +1,51 @@
 
-const path = require("path");
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
 const { ValidateUserForm } = require('../Validations/ValidateUser');
 
+const { UserSchema,User } = require('../Models/User');
+const { GenerateHashedPassword } = require('../Helpers/PasswordManager');
 
-const InserNewUser = (User) =>{
-    // valdate User : 
-    const isValideUser = ValidateUserForm(User); 
-    if ( isValideUser ){
-        // check if user not already exist : 
-        const getQuery = `
-        SELECT * FROM Users WHERE Users.Name = '${User.Name}'
-        `;
-        // conect to the db : 
-        open({
-            filename:path.join(__dirname,"./","UserManager.db"),
-            driver: sqlite3.Database
-        })
-        .then(
-            db =>{
-                db.all(
-                    getQuery,
-                    [],
-                    (err,rows) => {
-                        if ( err ){
-                            return console.error(err.message);
-                        }
-                        //res.render("books", { model: rows });
-                        console.log({ model: rows });
-                    }    
-                )
-            }
-        ) ;
-        // run the command : 
-        
-        
-        // generate query to insert new user : 
-        const inserQuery = `
-            INSERT INTO Users Values (
-                NULL,'${User.Name }','${User.GenerateHashedPassword()}'
-            );
-        `; 
-        open({
-            filename:path.join(__dirname,"./","UserManager.db"),
-            driver: sqlite3.Database
-        }).then( db =>{
-            db.run(
-                inserQuery,
-                err =>{
-                    if ( err ){
-                        return console.error(err.message );
-                    }
-                }
-            )
-        }).catch( error => console.error(" Cann not connected :   ",error));
-        ;
-            // run the command : 
-            return;
+const mongoose = require('mongoose');
+
+const GetUserByName = (UserName) => {
+    
+}
+const InserNewUser = (name,password,role)=>{
+    // hash password : 
+    let new_user = {};
+    let message = "";
+    let state = 100;
+    const hashed_password = GenerateHashedPassword(password);     
+    const item_to_insert =User(
+        {
+            name:name,
+            password:hashed_password,
+            role:role
+        }
+    );
+    // save the current record :
+    try{
+        item_to_insert.save();
+        new_user = item_to_insert;
+        message ="User Created ";
+        state = 200;
+    }catch{
+        new_user={};
+        message="Error Insert User";
+        state=400;
     }
-    return console.error("User Validate Error ");
+    return {
+        new_user,
+        message,
+        state
+    };
+}
+
+
+
+
+module.exports = {
+    InserNewUser
 };
 
 
-// export methods 
-module.exports = { InserNewUser };
+
