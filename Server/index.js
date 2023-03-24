@@ -39,8 +39,8 @@ my_server.use(
 
 // confing my server : node
 
-my_server.listen(8080, ()=> {
+my_server.listen(8080, async ()=> {
     console.log( "the shit happen  at http://localhost:8080  ");
-    MakeConnexion();
+    await MakeConnexion();
 });
 
