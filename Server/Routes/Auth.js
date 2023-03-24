@@ -2,33 +2,26 @@ const User = require('../Models/User');
 
 const Router = require('express').Router();
 
-//const sqlite = require('sqlite3').verbose();
 
-//const { GetDb } = require('../DB-Config/DBManager');
-
-
-const { InserNewUser } = require('../DB-Config/UserManager');
+const { InserNewUser, ChechUser } = require('../DB-Config/UserManager');
 
 
 
 // Login handler : 
 Router.post("/login",
-    (req,res )=>{
-        // get request body :
+    async (req,res )=>{
         // export name email password from req.body :
-        const { name, email, password } = req.body;
-        // insert new User : 
-        const my_user = User(
+        const { name, password } = req.body;
+        // trye to insert my user target : 
+        const {user,message,connected } = await ChechUser(
             name,
-            email,
             password
         );
-        // trye to insert my user target : 
-
         res.send(
             {
-                action:'Login',
-                Data:req.body
+                user,
+                message,
+                connected
             }
         );
     }
@@ -38,10 +31,10 @@ Router.post("/login",
 
 // Registration Handler : 
 Router.post("/register",
-    (req,res) =>{
+    async (req,res) =>{
         // get body : 
         const { name ,password, role } = req.body;
-        const response = InserNewUser(
+        const response = await InserNewUser(
             name,
             password,
             role
@@ -50,6 +43,7 @@ Router.post("/register",
                 {
                     state:response.state,
                     user:response.new_user,
+                    message:response.message,
                     created:response.state === 200
                 }
                 );
