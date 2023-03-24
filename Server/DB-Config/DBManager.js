@@ -14,7 +14,7 @@ const MakeConnexion = async ()=>{
         db_uri
     ).then(
         console.log(
-            " Coneected to Db-could let make sheet done !"
+            "\n ::> Conected to Db-could let make sheet done!"
         )
     ).catch( err => console.error(" Cann not make connexion : ", err));
 };
