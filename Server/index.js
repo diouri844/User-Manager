@@ -14,7 +14,7 @@ const bodyparser = require('body-parser');
 //const sqlite = require('sqlite3').verbose();
 
 const AuthRouter = require('./Routes/Auth');
-
+const UserRouter = require('./Routes/User');
 
 const { MakeConnexion  } = require("./DB-Config/DBManager");
 
@@ -34,6 +34,13 @@ my_server.use(
     '/api/users',AuthRouter
 );
 
+
+// add user crud router :
+
+my_server.use(
+    '/api/manager',
+    UserRouter
+);
 
 
 
