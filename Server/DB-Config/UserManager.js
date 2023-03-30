@@ -13,6 +13,12 @@ const GetUserByName = async(UserName) => {
 };
 
 
+
+const GetUserList = async() => {
+    return await User.find({});
+}
+
+
 const InserNewUser = async (name,password,role)=>{
     // hash password : 
     let new_user = {};
@@ -60,7 +66,7 @@ const ChechUser = async (name,password)=>{
     // check user by name : 
     const user = await GetUserByName(name);
     // check if user exist :
-    if( user == null ){
+    if( user === null ){
         return {
             message:"User Not Exist",
             user:null,
@@ -95,6 +101,7 @@ const ChechUser = async (name,password)=>{
 module.exports = {
     InserNewUser,
     ChechUser,
+    GetUserList,
     GetUserByName
 };
 
