@@ -3,9 +3,15 @@
 
 const jwt = require('jsonwebtoken');
 
-const  generateAccessToken = (username, hashed_password) => 
+const  generateAccessToken =  async (username, hashed_password ) => 
 {
-    return jwt.sign(username, hashed_password, { expiresIn: '1800s' });
+    return  await jwt.sign(
+        {   name: username , 
+            password: hashed_password,
+        } , 
+        hashed_password, 
+        { expiresIn: '1800s' }
+    );
 }
 
 
