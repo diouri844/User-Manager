@@ -15,7 +15,7 @@ Router.post("/login",
         // trye to insert my user target : 
         const {user,message,connected } = await ChechUser(
             name,
-            password
+            password,
         );
         res.send(
             {
