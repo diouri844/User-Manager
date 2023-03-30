@@ -1,8 +1,10 @@
 
-const { ValidateUserForm } = require('../Validations/ValidateUser');
+//const { ValidateUserForm } = require('../Validations/ValidateUser');
 
-const { UserSchema,User } = require('../Models/User');
+const { User } = require('../Models/User');
 const { GenerateHashedPassword } = require('../Helpers/PasswordManager');
+
+const { generateAccessToken } = require('../Helpers/JwtManager');
 
 const mongoose = require('mongoose');
 
@@ -69,7 +71,7 @@ const ChechUser = async (name,password)=>{
         const hashed_password = GenerateHashedPassword(password);     
         if( hashed_password == user.password ){
             // generate token :
-            const login_token = GenerateHashedPassword(name,password);
+            const login_token = await generateAccessToken(name,password);
             // update the token attribute of the current connected user :
             user.token = login_token;
             await user.save();
@@ -92,7 +94,8 @@ const ChechUser = async (name,password)=>{
 
 module.exports = {
     InserNewUser,
-    ChechUser
+    ChechUser,
+    GetUserByName
 };
 
 
