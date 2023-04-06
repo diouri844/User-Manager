@@ -41,7 +41,7 @@ Router.get('/feeds',
             });
         }
         // check user permissions : if role is admin :
-        if ( user.role != 'admin' ){
+        if ( user.role != 'Admin' ){
             res.status(404).json({
                 message: 'Permission denied to access feeds',
                 operation: {
@@ -72,6 +72,56 @@ Router.get('/feeds',
 
 
 
+// create new endpoint to get a feed by id 
+
+Router.get('/feeds/:id', 
+    async (req, res) => {
+        // get user name and password from request headre
+        const feed_id = req.params.id;
+        // id is the name of  the user :
+        console.log(
+            feed_id
+        );
+        // check authorization :
+        const { name, pswd } = req.headers;
+        if ( ! name || !pswd ){
+            res.status(401).json({
+                message: ' username and  password required' 
+            });
+        }
+        // check if the user is connected :
+        const user_token = await GetUserByName(name);
+        if ( user_token === null ){
+            res.status(402).json({
+                message: 'Invalid username or password'
+            });
+        }
+        //chck if the password is correct :
+        const generated_pswd = GenerateHashedPassword(pswd);
+        if ( user_token.password!== generated_pswd ){
+            res.status(401).json({
+                message: 'Invalid password'
+            });
+        }
+        //check if the user is connected :
+        if ( user_token.token === '0000' ){
+            res.status(401).json({
+                message: 'User is not connected'
+            });
+        }
+        // all is grateful :
+        const user = await GetUserByName(feed_id);
+        res.status(200).json({
+            user: user || {},
+            message: 'Success',
+            operation: {
+                name: 'get feed by id',
+                date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                by: user_token._id
+            },
+            OperationBy: user_token
+        });
+});
 
 // router to create new feed <user> 
 
