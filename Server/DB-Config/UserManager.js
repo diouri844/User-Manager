@@ -37,8 +37,7 @@ const InserNewUser = async (name,password,role)=>{
             {
                 name:name,
                 password:hashed_password,
-                role:role,
-                token:"0000"
+                role:role
             }
         );
         // save the current record :
@@ -77,13 +76,14 @@ const ChechUser = async (name,password)=>{
         const hashed_password = GenerateHashedPassword(password);     
         if( hashed_password == user.password ){
             // generate token :
-            const login_token = await generateAccessToken(name,password);
+            const login_token =  generateAccessToken(name);
             // update the token attribute of the current connected user :
-            user.token = login_token;
+            const auth_token = login_token;
             await user.save();
             return {
                 user:user,
                 message:"Login Successful",
+                token: auth_token,
                 connected:true
             };
         }
