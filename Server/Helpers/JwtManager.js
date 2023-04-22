@@ -3,16 +3,14 @@
 
 const jwt = require('jsonwebtoken');
 
-const  generateAccessToken =  async (username, hashed_password ) => 
+const  generateAccessToken =  (username ) => 
 {
-    return  await jwt.sign(
-        {   name: username , 
-            password: hashed_password,
-        } , 
-        hashed_password, 
+    return jwt.sign(
+        {'name':username}
+        ,process.env.JWT_TOKEN_SECRET,
         { expiresIn: '1800s' }
     );
-}
+};
 
 
 
