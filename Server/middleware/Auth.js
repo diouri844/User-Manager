@@ -11,7 +11,6 @@ const CheckAuth = async (req, res, next ) => {
             res.status(400).json({ message: "You are not authorized"});
             return;
         }
-        console.log( process.env.JWT_TOKEN_SECRET);
         jwt.verify(
             token, 
             process.env.JWT_TOKEN_SECRET,
@@ -20,11 +19,13 @@ const CheckAuth = async (req, res, next ) => {
                     res.status(401).json({ message: err.message });
                     return;
                 }
-                const user_target =  await User.findOne({_id: user_payload.id});
-                    console.table( user_target );
-                    req.user_token = user_target; 
-                    next();
-                    return;
+                const user_target =  await User.findOne(
+                    {
+                        name: user_payload.name
+                    }
+                );
+                req.user_token = user_target; 
+                return next();
             });
     }catch ( err ){
         console.error( err.message );
@@ -34,7 +35,6 @@ const CheckAuth = async (req, res, next ) => {
             }
         );
     }
-
 }
 
 
