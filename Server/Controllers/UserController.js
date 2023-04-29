@@ -3,8 +3,10 @@ const  { GetUserByName, GetUserList } = require('../DB-Config/UserManager');
 
 const { GenerateHashedPassword } = require('../Helpers/PasswordManager');
 
-const  { ValideObjectId } =require("../Validations/ValidateUser");
+const  { ValideObjectId } = require("../Validations/ValidateUser");
+
 const { User } = require('../Models/User');
+const { response } = require('express');
 
 const getUsersController = async ( req, res ) =>{
     // all is greate now we sould get list of users :
@@ -24,12 +26,11 @@ const getUsersController = async ( req, res ) =>{
     );
 }
 
-
 const UpdateUserController = async ( req, res) => {
     // get user id from request params : 
-    const { feed_id } = req.params;
+    const { id } = req.params;
     // check if is a valid Object Is later ..... 
-    if ( ! ValideObjectId( feed_id ) ) {
+    if ( ! ValideObjectId( id ) ) {
         res.status(500).json(
             {
                 message: " Feed ID is not a valid"
@@ -39,7 +40,7 @@ const UpdateUserController = async ( req, res) => {
     // get the target user : 
     try{
         const user_to_update = await User.findByIdAndUpdate( 
-            feed_id, 
+            id, 
             req.body,
             { new: true} 
         );
@@ -50,9 +51,9 @@ const UpdateUserController = async ( req, res) => {
             operation: {
                 name: 'Update feed by id',
                 date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
-                by: user_token._id
+                by: req.user_token._id
             },
-            OperationBy: req.body.user_token || {}
+            OperationBy: req.user_token || {}
         });
     }catch( err ){
         res.status(500).json(
@@ -66,7 +67,6 @@ const UpdateUserController = async ( req, res) => {
 const getUserController = async (req, res) => {
     // get user name and password from request headre
     const { id }  = req.params;
-    console.log( id );
     // check if the id is a valid Oid : 
     if ( ! ValideObjectId( id ) ) {
         res.status(500).json(
@@ -85,9 +85,9 @@ const getUserController = async (req, res) => {
             operation: {
                 name: 'get feed by id',
                 date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
-                by: ''
+                by: req.user_token._id
             },
-            OperationBy: {}
+            OperationBy: req.user_token
         });
     }catch ( err ){
         res.status(500).json(
@@ -102,88 +102,106 @@ const getUserController = async (req, res) => {
 const createUserController = async (req, res) => {
     // get body from request :
     const { Bodyname, Bodypswd, Bodyrole } = req.body;
-    // get token from header:
-    const { name, pswd } = req.headers;
-
-    if ( !Bodyname ||!Bodypswd ||!Bodyrole ){
-        res.status(401).json(
-            {
-            message: 'username, password and role required'
-            }
-        );
-    }
-    // check tokent usr is valid or not : 
-    const userToken = await GetUserByName(name);
-    if ( userToken === null ){
-        res.status(402).json(
-            {
-            message: 'Invalid Connexion token'
-            }
-        );
-    }
-    // check password hased is match or not : 
-    if ( userToken.password !== GenerateHashedPassword(pswd) ){
-        res.status(404).json(
-            {
-                message: 'Invalid Password token'
-            }
-        );        
-    }
-    // chekc if user connected : 
-    if ( userToken.token!== '0000' ){
-        res.status(401).json(
-            {
-                message: 'User is not connected'
-            }
-        );
-    }
     // check user permissions : if role is admin :
-    if ( userToken.role!= 'Admin' ){
+    if (  req.user_token.role != 'Admin' ){
         res.status(404).json(
             {
-                message: 'Permission denied to access feeds',
-                operation: {
-                    name: 'create new feed',
-                    date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
-                    by: userToken._id
-                },
-                OperationBy: userToken
+                message: 'Permission denied to access feeds'
             }
         );
+        return;
     }
     // all is greate now we sould get list of users :
     // chec if user name is already used :
-    const user = await GetUserByName(name);
+    const user = await GetUserByName(Bodyname);
     if ( user != null){
         res.status(401).json(
             {
-            message: 'username already used'
+                message: 'username already used'
+            }
+        );
+        return;
+    }
+    // create new user :
+    try{
+        const new_user = await User.create({
+            name: Bodyname,
+            password: GenerateHashedPassword(Bodypswd),
+            role: Bodyrole
+        });
+        res.status(200).json(
+            {
+                message: 'Success',
+                user: new_user || {},
+                operation: {
+                    name: 'create new feed',
+                    date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                    by: req.user_token._id
+                },
+                OperationBy: req.user_token
+            }
+        );
+        return;
+    }catch( err ){
+        res.status(501).json(
+            {
+                message: err.message
             }
         );
     }
-    // create new user :
-    const new_user = await User.create({
-        name: Bodyname,
-        password: GenerateHashedPassword(Bodypswd),
-        role: Bodyrole,
-        token: '0000'
-    });
-    res.status(200).json(
-        {
+}
+
+
+
+const DeleteUserController = async (req, res) => {
+    if (  req.user_token.role != 'Admin' ){
+        res.status(404).json(
+            {
+                message: 'Permission denied to access feeds'
+            }
+        );
+        return;
+    }
+    // get the user target id from the request parameters :
+    const  { id } = req.params;
+    // check if is a valid mongo object id : 
+    if ( ! ValideObjectId( id ) ){
+        res.status(500).json(
+            {
+                message: " Feed ID is not a valid"
+            }
+        );
+        return;
+    }
+    // all is great , try to get target by id and delete is :
+    try{
+        const targetUser = await User.findByIdAndDelete(id);
+        res.status(200).json({
+            user: targetUser || {},
             message: 'Success',
             operation: {
-                name: 'create new feed',
+                name: 'Delete feed by id',
                 date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
-                by: userToken._id
+                by: req.user_token._id
             },
-            OperationBy: userToken
-        }
-    ); 
-}
+            OperationBy: req.user_token || {}
+        });
+    }catch ( err ){
+        res.status(501).json(
+            {
+                message: err.message
+            }
+        );
+    }
+
+};
+
+
 
 module.exports = {
     getUsersController,
     UpdateUserController,
     getUserController,
-    createUserController
+    createUserController,
+    DeleteUserController
 }
