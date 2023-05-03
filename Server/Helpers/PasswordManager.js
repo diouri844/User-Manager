@@ -1,18 +1,34 @@
 
+const bcrypt = require('bcrypt');
 
 
 
-
-const crypto = require('crypto');
-
-const GenerateHashedPassword = (password) =>{
-        const sha256 = crypto.createHash('sha256');
-        const hash = sha256.update(password).digest('base64');
+const GenerateHashedPassword = async (password) =>{
+        // create a slat
+        const slat = process.env.HASHING_SALT;
+        const hash = await bcrypt.hash(password , slat);
         return hash;
+};
+
+
+const IsMatchPassword =  async (UserPassword,RequestPassword) => {
+    var result = false;
+    await bcrypt.compare(
+         RequestPassword, 
+         UserPassword
+         ).then( 
+            res => {
+                console.log(" matching password ");
+                console.log( res );
+                result = true;
+                return;
+         });
+    return result;
 };
 
 
 
 module.exports = {
-    GenerateHashedPassword
+    GenerateHashedPassword,
+    IsMatchPassword
 };
