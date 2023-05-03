@@ -16,17 +16,26 @@ const bodyparser = require('body-parser');
 const AuthRouter = require('./Routes/Auth');
 const UserRouter = require('./Routes/User');
 
+const cors = require('cors');
+const manageCors = require('./middleware/Cors');
+
 const { MakeConnexion  } = require("./DB-Config/DBManager");
 
 
 // create my server application : 
 
 my_server = express();
-
+my_server.use(cors());
+my_server.use((req, res, next)=>{
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+});
 // use morgan : 
 my_server.use(morgan('tiny'));
 my_server.use(bodyparser.urlencoded({extended:true}));
 my_server.use(bodyparser.json())
+
 // use my auth router :
 
 
