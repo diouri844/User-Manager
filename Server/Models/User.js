@@ -1,26 +1,6 @@
 
 
-//const crypto = require('crypto');
-
-// define user object :
-/*const  User = class {
-    constructor(name,password){
-        this.name = name;
-        this.password = password
-    }
-    get Name(){
-        return this.name;
-    }
-    get Password(){
-        return this.password;
-    }
-    // methods : 
-    GenerateHashedPassword(){
-        const sha256 = crypto.createHash('sha256');
-        const hash = sha256.update(this.password).digest('base64');
-        return hash;
-    }
-}*/
+const { GenerateHashedPassword } = require('../Helpers/PasswordManager');
 
 const UserRole =  {
     user:"User",
@@ -49,6 +29,30 @@ const UserSchema = mongoose.Schema({
         required:true
     }
 });
+
+
+
+// create a static method fired before each registration : 
+
+
+UserSchema.pre('save', async function(next) {
+    try{
+        const hashedPassword = await GenerateHashedPassword( this.password );
+        // update the current user password before vasing it in the database:
+        this.password = hashedPassword;
+        // call the next method  
+        next();
+        // move out frome the middleware : 
+        return;
+    }catch ( error ){
+        next(error);
+        return;
+    }
+})
+
+
+
+
 
 const User = mongoose.model("User",UserSchema);
 // define my modal and use my pre-difinate schema : 
