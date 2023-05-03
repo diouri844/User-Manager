@@ -6,7 +6,6 @@ const { GenerateHashedPassword } = require('../Helpers/PasswordManager');
 const  { ValideObjectId } = require("../Validations/ValidateUser");
 
 const { User } = require('../Models/User');
-const { response } = require('express');
 
 const getUsersController = async ( req, res ) =>{
     // all is greate now we sould get list of users :
