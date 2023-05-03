@@ -3,21 +3,16 @@
 
 const { User } = require('../Models/User');
 const { GenerateHashedPassword } = require('../Helpers/PasswordManager');
-
 const { generateAccessToken } = require('../Helpers/JwtManager');
 
-const mongoose = require('mongoose');
 
 const GetUserByName = async(UserName) => {
     return await User.findOne({ name:UserName }); 
 };
 
-
-
 const GetUserList = async() => {
     return await User.find({});
 }
-
 
 const InserNewUser = async (name,password,role)=>{
     // hash password : 
@@ -31,13 +26,12 @@ const InserNewUser = async (name,password,role)=>{
         message = "User Already Exist";
         state = 400;
     }
-    else{
-        const hashed_password = GenerateHashedPassword(password);     
+    else{     
         const item_to_insert = User(
             {
-                name:name,
-                password:hashed_password,
-                role:role
+                name,
+                password,
+                role
             }
         );
         // save the current record :
@@ -65,7 +59,7 @@ const ChechUser = async (name,password)=>{
     // check user by name : 
     const user = await GetUserByName(name);
     // check if user exist :
-    if( user === null ){
+    if( !user ){
         return {
             message:"User Not Exist",
             user:null,
@@ -73,24 +67,27 @@ const ChechUser = async (name,password)=>{
         };
     }
     else{
-        const hashed_password = GenerateHashedPassword(password);     
-        if( hashed_password == user.password ){
+        console.log(
+            password,
+            "\n",
+            user
+        );
+        const hashedPassword = await GenerateHashedPassword(password);
+        if( user.password === hashedPassword ){
             // generate token :
-            const login_token =  generateAccessToken(name);
+            const token =  generateAccessToken(name);
             // update the token attribute of the current connected user :
-            const auth_token = login_token;
-            await user.save();
             return {
                 user:user,
                 message:"Login Successful",
-                token: auth_token,
+                token,
                 connected:true
             };
         }
         else{
             return {
                 user:{},
-                message:"Email or Password Incorrect",
+                message:"UserName or Password Incorrect",
                 connected:false
             };
         }
