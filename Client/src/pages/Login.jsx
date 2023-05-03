@@ -18,37 +18,55 @@ import {
 
 
 
-import { EmailIcon, LockIcon } from '@chakra-ui/icons'
+import { AtSignIcon, LockIcon } from '@chakra-ui/icons';
+import axios from "axios"; 
+import GenerateHashedPassword from '../tools/Hashing';
 
 import { useRef, useState } from 'react';
 
 export default function Login() {
     const [sending,setSending] =  useState(false);
     const [ErrorState, setErrorState] = useState(false);
-    const Email = useRef("");
+    const Name = useRef("");
     const Password = useRef("");
     
-    const HandelSubmit = ()=>{
+    async function  HandelSubmit(){
         // get current values : 
         setSending(true);
         // get input data :
-        const sended_email = Email.current.value;
+        const sended_name = Name.current.value;
         const sended_password = Password.current.value;
-        // check if is validate : 
-        if ( 
-          sended_email.length === 0 || sended_email.includes(' ')  
-        ){
-          // set an error state : 
+        // create a json object to send to the server endpoit ;
+        //  
+        const Payload =  {
+          name: sended_name,
+          password : sended_password
+        };
+        console.log( Payload);
+        const config =  {
+          'header':{
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          }
+        };
+        // send post request : 
+        const response = await axios.post(
+          "http://localhost:8080/api/users/login",
+          Payload,
+          config
+        );
+        setSending(false);
+        // check response status: 
+        if ( response.status === 200 ) {
+          console.log( response.data);
+          return;
+        }
+        else{
           setErrorState(true);
-          // self closing 
-          setTimeout(
-            ()=>{
-              setErrorState(false)
-              setSending(false);
-              // clear email field : 
-              Email.current.value = "";
-            },2500
-          );
+          // clear : 
+          Email.current.value = "";
+          Password.current.value = "";
+          console.error(response);
           return;
         }
     };
@@ -77,17 +95,17 @@ export default function Login() {
             <Stack spacing="5">
               <FormControl>
                 <FormLabel htmlFor="email">
-                  <EmailIcon boxSize={5}  color='pink' mx={2} />
-                  Email
+                <AtSignIcon boxSize={5}  color='pink' mx={2} />
+                  User-Name
                 </FormLabel>
-                <Input id="email" type="email" ref={Email} />
+                <Input id="email" type="text" ref={Name} />
               </FormControl>
             </Stack>
 
             <Stack spacing="5">
               <FormControl>
                 <FormLabel htmlFor="password">
-                  <LockIcon boxSize={5}  color='pink' mx={2} />
+                <LockIcon boxSize={5}  color='pink' mx={2} />
                   Password</FormLabel>
                 <Input id="password" type="password" ref={Password} />
               </FormControl>
@@ -102,7 +120,13 @@ export default function Login() {
 
             <Stack spacing="6">
               <Button
-              onClick={()=>{ HandelSubmit() }} 
+              onClick={
+                (e )=>{
+                  e.preventDefault();
+                  console.log(" this is my submit handler ");
+                  HandelSubmit();
+                }
+              } 
               colorScheme='blue' variant='solid'>
                   { sending && <Spinner color='white' /> }
                   { !sending && (<span>Sign in</span>) }
