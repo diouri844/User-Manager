@@ -14,11 +14,12 @@ const GetUserList = async() => {
     return await User.find({});
 }
 
-const InserNewUser = async (name,password,role)=>{
+const InserNewUser = async (name,password,role, email)=>{
     // hash password : 
     let new_user = {};
     let message = "";
     let state = 100;
+    // check user format : 
     // check user by name : 
     const user = await GetUserByName(name);
     // check if user exist :
@@ -31,7 +32,8 @@ const InserNewUser = async (name,password,role)=>{
             {
                 name,
                 password,
-                role
+                role,
+                email
             }
         );
         // save the current record :
