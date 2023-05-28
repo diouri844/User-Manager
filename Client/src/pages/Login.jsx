@@ -21,7 +21,7 @@ import {
 import { AtSignIcon, LockIcon } from '@chakra-ui/icons';
 import axios from "axios"; 
 import GenerateHashedPassword from '../tools/Hashing';
-
+import { Link } from "react-router-dom";
 import { useRef, useState } from 'react';
 
 export default function Login() {
@@ -112,10 +112,16 @@ export default function Login() {
             </Stack>
             
             <HStack justify="space-between">
-              <Checkbox defaultChecked>Remember me</Checkbox>
               <Button variant="link" colorScheme="blue" size="sm">
                 Forgot password?
               </Button>
+              <Link variant="link" tagName="Button"
+              to="/register"
+              colorScheme="pink" size="sm"
+              className='underline text-primary'
+              >
+                Create New account
+              </Link>
             </HStack>
 
             <Stack spacing="6">
