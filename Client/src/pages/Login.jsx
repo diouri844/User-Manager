@@ -20,13 +20,17 @@ import {
 
 import { AtSignIcon, LockIcon } from '@chakra-ui/icons';
 import axios from "axios"; 
-import GenerateHashedPassword from '../tools/Hashing';
-import { Link } from "react-router-dom";
+//import GenerateHashedPassword from '../tools/Hashing';
+import { Link, useNavigate  } from "react-router-dom";
 import { useRef, useState } from 'react';
 
 export default function Login() {
     const [sending,setSending] =  useState(false);
     const [ErrorState, setErrorState] = useState(false);
+    const [SuccessState, setSuccessState] = useState(false);
+    const [UserState, setUserState] = useState({});
+    const [UserError, setUserError] = useState({})
+    const myNavigate = useNavigate();
     const Name = useRef("");
     const Password = useRef("");
     
@@ -56,17 +60,40 @@ export default function Login() {
           config
         );
         setSending(false);
-        // check response status: 
-        if ( response.status === 200 ) {
-          console.log( response.data);
-          return;
+        if ( response.data.connected ) {
+          setSuccessState(true);
+          setUserState({...response.data}); 
+          const token = response.data.token;
+          const user_id = response.data.user._id
+          // dislay a popup for auth status : 
+          setTimeout(
+            ()=>{
+              // clear : 
+              Name.current.value = "";
+              Password.current.value = "";
+              // reset states : 
+              setSuccessState(false);
+              // set a global state : 
+              window.localStorage.setItem("AuthToken",token);
+              window.localStorage.setItem("UserId",user_id);
+              // redirect the the dash :
+              myNavigate('/profile'); 
+            },2500
+          );
         }
         else{
-          setErrorState(true);
-          // clear : 
-          Email.current.value = "";
-          Password.current.value = "";
           console.error(response);
+          setUserError({...response.data});
+          setErrorState(true);
+          setTimeout(
+            ()=>{
+              // clear : 
+              Name.current.value = "";
+              Password.current.value = "";
+              // reset states : 
+              setErrorState(false);
+            },2500
+          );
           return;
         }
     };
@@ -76,9 +103,25 @@ export default function Login() {
             <Alert status='error' my={3}>
               <AlertIcon />
               <AlertTitle>Oooops !!</AlertTitle>
-              <AlertDescription>Your Email is not valid .</AlertDescription>
+              <AlertDescription>
+                { UserError.message }
+              </AlertDescription>
           </Alert>
-          )}
+          )
+        }
+        {SuccessState && (
+            <Alert status='success' my={3}>
+              <AlertIcon />
+              <AlertTitle>{ UserState?.message }</AlertTitle>
+              {UserState?.connected && (
+                <AlertDescription>
+                  Welcome back : { UserState?.user?.name } 
+                </AlertDescription>  
+              )}
+              
+          </Alert>
+          )
+        }
         <Stack spacing="8">
           <Heading size={{ base: 'sm', md: 'md' }} color='black'>  
           Welcome Back
