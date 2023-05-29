@@ -6,6 +6,7 @@ const { User } = require("../Models/User");
 const CheckAuth = async (req, res, next ) => {
     // get token from request header : 
     try{
+        console.table(req.headers);
         const token = req.headers.authorization.split(' ')[1];
         if( !token ){
             res.status(400).json({ message: "You are not authorized"});
