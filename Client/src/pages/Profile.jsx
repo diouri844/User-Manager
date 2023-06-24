@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
-
 import axios from 'axios';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Container, Grid, Heading, Text } from '@chakra-ui/react';
+import { SocialProfileWithImage, SimpleSidebar } from '../components';
+import { useNavigate } from "react-router-dom";
 
-import { Container, Grid, Heading, Text } from '@chakra-ui/react';
 
 function Profile() {
     const [userName, setUserName] = useState("");
     const [userEmail, setUserEmail] = useState("");
     const [userRole, setUserRole] = useState("");
-
-
+    const [isSessionError, setSessionError] = useState(false);
+    const navigation = useNavigate();
     useEffect(
         ()=>{
             // get the local logged user from loca storage:
@@ -45,7 +46,21 @@ function Profile() {
                         setUserRole(res.data.user.role);
                     }
                 }
-                ).catch( err => console.error(err));
+                ).catch( err => 
+                    {
+                        setSessionError(true);
+                        console.error(
+                        "\t ::> fetch user profile error : \n ",err);
+                        // try to popup a session error message and redirect to login page again :
+                        setTimeout(
+                            ()=>{
+                                setSessionError(false);
+                                // redirect to login page : 
+                                navigation('/');
+                            },2500
+                        );
+                    }    
+                );
         },[]
     );
     const user = {
@@ -53,32 +68,40 @@ function Profile() {
         email: userEmail,
         role: userRole
     }
-    console.log( user );
   return (
     <>
          <Container maxW="5xl" 
          py={{ base: '12', md: '24' }} 
          px={{ base: '0', sm: '8' }}> 
-                <Text
-                bgGradient="linear(to-l, #7928CA, #FF0080)"
-                bgClip="text"
-                fontSize="5xl"
-                fontWeight="extrabold"
-                >
-                { user.name }
-                </Text>
-            <Grid container spacing={4}>
-                <Grid item xs={12} sm={6}>
-                <Heading as='h2' size='2xl'>
-                </Heading>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    
-                </Grid>
-            </Grid>
+            { isSessionError && 
+                <Alert className='absolute'
+                status='error'
+                variant='solid'
+                flexDirection='column'
+                alignItems='center'
+                justifyContent='center'
+                textAlign='center'
+                height='300px'>
+                    <AlertIcon boxSize='60px' mr={0} />
+                    <AlertTitle  mt={4} mb={1} fontSize='lx' >
+                        Eroor occured : 
+                    </AlertTitle>
+                    <AlertDescription maxWidth='xl' >
+                        Session error , authentification required please try again
+                    </AlertDescription>
+                        
+                </Alert>
+            }
+            {!isSessionError &&
+                <>
+                    <SimpleSidebar />
+                    <SocialProfileWithImage 
+                    name={ user.name }
+                    email={ user.email }
+                    role={ user.role }
+                    />
+                </>
+            }
          </Container>
     </>
     
