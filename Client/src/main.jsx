@@ -11,6 +11,8 @@ import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import Feeds from './pages/Feeds';
+import { Settings } from './components';
 
 
 // define my router system : 
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element:<Profile />
+  },
+  {
+    path: "/feeds",
+    element:<Feeds />
+  },
+  {
+    path: "/settings",
+    element:<Settings />
   }
 ]);
 
