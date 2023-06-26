@@ -13,39 +13,39 @@ function Profile() {
     const navigation = useNavigate();
     useEffect(
         ()=>{
-            // get the local logged user from loca storage:
-            const { AuthToken, UserId} = window.localStorage;
-            // create my config object for the request header :
-            var barrer = "Barer ";
-            if(AuthToken[0] === '"' && AuthToken[AuthToken.length - 1] === '"'){
-                let updatedToken = AuthToken.slice(1,-1);
-                barrer += updatedToken;
-            }
-            else{
-                barrer += AuthToken;
-            }
-            const config =  {
-                'headers':{
-                    'Authorization': barrer,
-                    'Content-Type': 'application/json',
-                    'Accept': '*/*'
+            try{
+                const { AuthToken, UserId} = window.localStorage;
+                // create my config object for the request header :
+                var barrer = "Barer ";
+                if(AuthToken[0] === '"' && AuthToken[AuthToken.length - 1] === '"'){
+                    let updatedToken = AuthToken.slice(1,-1);
+                    barrer += updatedToken;
                 }
-            };
-            // try to get the user by id : 
-            axios.get(`http://localhost:8080/api/manager/feeds/${UserId}`,
-            config
-            )
-            .then(
-                res => {
-                    // check state : 
-                    if ( res.data.message === 'Success'){
-                        // set user state :
-                        // update it :
-                        setUserName(res.data.user.name);
-                        setUserEmail(res.data.user.email);
-                        setUserRole(res.data.user.role);
+                else{
+                    barrer += AuthToken;
+                }
+                // get the local logged user from loca storage:
+                const config =  {
+                    'headers':{
+                        'Authorization': barrer,
+                        'Content-Type': 'application/json',
+                        'Accept': '*/*'
                     }
-                }
+                };
+                // try to get the user by id : 
+                axios.get(`http://localhost:8080/api/manager/feeds/${UserId}`,
+                config
+                ).then(
+                    res => {
+                        // check state : 
+                        if ( res.data.message === 'Success'){
+                            // set user state :
+                            // update it :
+                            setUserName(res.data.user.name);
+                            setUserEmail(res.data.user.email);
+                            setUserRole(res.data.user.role);
+                        }
+                    }
                 ).catch( err => 
                     {
                         setSessionError(true);
@@ -60,7 +60,20 @@ function Profile() {
                             },2500
                         );
                     }    
+                );    
+            }catch ( err ){
+                setSessionError(true);
+                console.error(
+                    "\t ::> login auth error : \n ",err
                 );
+                setTimeout(
+                    ()=>{
+                        setSessionError(false);
+                        // redirect to login page : 
+                        navigation('/');
+                    },2500
+                );
+            } 
         },[]
     );
     const user = {
