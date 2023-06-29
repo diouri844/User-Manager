@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { useNavigate } from 'react-router-dom';
 
@@ -8,13 +8,10 @@ function logout() {
   useEffect(
     ()=>{
       try{
-        setLogoutState(true);
         const currentUserToken = localStorage.getItem('AuthToken');
-        if(!currentUserToken){
-          navigation('/');
-          return;
-        }else{
+        if(currentUserToken){
           localStorage.removeItem('AuthToken');
+          //console.log( "token deleted ");
           // loging out :
           setTimeout(
             ()=>{
