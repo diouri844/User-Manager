@@ -22,7 +22,7 @@ import { AtSignIcon, LockIcon } from '@chakra-ui/icons';
 import axios from "axios"; 
 //import GenerateHashedPassword from '../tools/Hashing';
 import { Link, useNavigate  } from "react-router-dom";
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Login() {
     const [sending,setSending] =  useState(false);
@@ -33,7 +33,11 @@ export default function Login() {
     const myNavigate = useNavigate();
     const Name = useRef("");
     const Password = useRef("");
-    
+    useEffect( ()=>{
+      // set the doc title to the login page :
+      document.title = "Login into you account :)";
+    },[]);
+
     async function  HandelSubmit(){
         // get current values : 
         setSending(true);
