@@ -4,6 +4,8 @@ import { Alert, AlertDescription, AlertIcon, AlertTitle, Container, Grid, Headin
 import { SocialProfileWithImage, SimpleSidebar } from '../components';
 import { useNavigate } from "react-router-dom";
 
+import { defaultLayout as Layout } from '../layouts';
+
 
 function Profile() {
     const [userName, setUserName] = useState("");
@@ -13,6 +15,8 @@ function Profile() {
     const navigation = useNavigate();
     useEffect(
         ()=>{
+            // update doc title : 
+            document.title = `My Profile`;
             try{
                 const { AuthToken, UserId} = window.localStorage;
                 // create my config object for the request header :
@@ -83,9 +87,7 @@ function Profile() {
     }
   return (
     <>
-         <Container maxW="5xl" 
-         py={{ base: '12', md: '24' }} 
-         px={{ base: '0', sm: '8' }}> 
+         <Layout>
             { isSessionError && 
                 <Alert className='absolute'
                 status='error'
@@ -102,20 +104,16 @@ function Profile() {
                     <AlertDescription maxWidth='xl' >
                         Session error , authentification required please try again
                     </AlertDescription>
-                        
                 </Alert>
             }
             {!isSessionError &&
-                <>
-                    <SimpleSidebar />
                     <SocialProfileWithImage 
                     name={ user.name }
                     email={ user.email }
                     role={ user.role }
                     />
-                </>
             }
-         </Container>
+        </Layout>
     </>
     
   )
