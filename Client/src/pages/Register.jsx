@@ -22,17 +22,23 @@ import {
   import axios from "axios"; 
   import { Link } from "react-router-dom";
 
-  import { useRef, useState } from 'react';
+  import { useRef, useState, useEffect } from 'react';
 
 
   export default function Register(){
     const [sending,setSending] =  useState(false);
     const [ErrorState, setErrorState] = useState(false);
+    const [SuccessState, setSuccessState] = useState(false);
     const Name = useRef("");
     const Password = useRef("");
     const Email = useRef("");
+    useEffect(() =>{
+      document.title = "Create a new account";
+    },[]);
 
-    function HandelSubmit(){
+
+
+    async function HandelSubmit(){
         console.log("HandelSubmit \n ");
         setSending(true)
         // extract the name , email and password;
@@ -46,14 +52,26 @@ import {
             password: passwordtoSend,
             role:'Stuff'
         };
+        const config =  {
+          'header':{
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          }
+        };
         console.table(
             payload
-        );
-        // validate payload 
-          
+        );   
         // send the post request to the server 
-        
-        //setSending(false);
+        const response = await axios.post(
+          "http://localhost:8080/api/users/register",
+          payload,
+          config
+        );
+        setSending(false);
+        if ( response.data.created ){
+          setSuccessState(true);
+        }
+        console.log( response );
     }
 
     return(
@@ -65,6 +83,19 @@ import {
               <AlertDescription>Your Email is not valid .</AlertDescription>
           </Alert>
           )}
+        {SuccessState && (
+            <Alert status='success' my={3}>
+              <AlertIcon />
+              <AlertTitle>{ UserState?.message }</AlertTitle>
+              {UserState?.connected && (
+                <AlertDescription>
+                  { UserState?.user?.name } 
+                </AlertDescription>  
+              )}
+              
+          </Alert>
+          )
+        }
         <Stack spacing="8">
           <Heading size={{ base: 'sm', md: 'md' }} color='black'>  
           Create your account
