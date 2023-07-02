@@ -12,7 +12,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Feeds from './pages/Feeds';
-import { Settings } from './components';
+import { Settings, Explore, Logout } from './components';
 
 
 // define my router system : 
@@ -32,6 +32,16 @@ const router = createBrowserRouter([
   {
     path: "/feeds",
     element:<Feeds />
+  },
+  // add explore router :
+  {
+    path:"/explore",
+    element:<Explore />
+  },
+  // add logout handler : 
+  {
+    path:"logout",
+    element:<Logout />
   },
   {
     path: "/settings",
