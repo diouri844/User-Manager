@@ -97,11 +97,56 @@ const ChechUser = async (name,password)=>{
 }
 
 
+const CheckPassword = async( pswd, userid) => {
+    // try to get the user target hashed password: 
+    try{
+        const target = await User.findOne({
+            _id:userid
+        }
+        );
+        const hashedGetedPswd = target.password;
+        if ( !hashedGetedPswd ){
+            state = 400;
+            message = "error";
+            throw new Error("Can not find the user ");
+        }
+        // all is great to the next step : 
+        // try to hash the new password :
+        const newHashedPassword = await GenerateHashedPassword(pswd);
+        // check if there is no problem with the hash step : 
+        if ( !newHashedPassword ){
+            state = 400;
+            message = "error";
+            throw new Error("Can not hash the password ");
+        };
+        // check if the returned hashed password is the same as the user hashed password
+        if( hashedGetedPswd === newHashedPassword){
+            return {
+                state :200,
+                message:"success",
+                isEquales:true
+            }
+        }else{
+            return {
+                state :200,
+                message:"success",
+                isEquales:false
+            }
+        }
+    }catch(err){
+        console.error(err);
+        throw new Error("Can not find user target ");
+    }
+};
+
+
+
 module.exports = {
     InserNewUser,
     ChechUser,
     GetUserList,
-    GetUserByName
+    GetUserByName,
+    CheckPassword
 };
 
 
