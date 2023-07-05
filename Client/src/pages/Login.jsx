@@ -50,7 +50,6 @@ export default function Login() {
           name: sended_name,
           password : sended_password
         };
-        console.log( Payload);
         const config =  {
           'header':{
             'Content-Type': 'application/json',
@@ -176,7 +175,7 @@ export default function Login() {
               onClick={
                 (e )=>{
                   e.preventDefault();
-                  console.log(" this is my submit handler ");
+                  //console.log(" this is my submit handler ");
                   HandelSubmit();
                 }
               } 
