@@ -42,6 +42,7 @@ function profileSettings() {
   const [isPasswordChange, setIsPasswordChange] = useState(false);
   const [AlertMessage , setAlertMessage] = useState("");
   const [isError , setIsError] = useState(false);
+  const [isNotif , setIsNotif ] = useState(false);
   // set neavigator to redirect : 
   const navigate = useNavigate();
   // set ref to handel inputs : 
@@ -68,6 +69,8 @@ function profileSettings() {
       );
       return;
     }
+    // create a new user payload : 
+     let currentUserPayload = {};
     // check the new user credentinale : 
     // check user name updates : 
     if( isNameChange ){
@@ -93,16 +96,14 @@ function profileSettings() {
           );
           return;
         }
+        // all is greate : add the username to the current user: 
+        currentUserPayload.name = inputName;
     }
     // check user email updates : 
     if( isEmailChange ) {
       // get the current value of the usr email and the confirmations email : 
       const inputEmail = userEmail.current.value;
       const inputConfirmeEmail = emailConfrime.current.value;
-      console.log(
-        inputEmail,
-        inputConfirmeEmail
-      );
       // check if is the same : 
       if (inputEmail != inputConfirmeEmail ){
         // set error state :
@@ -147,6 +148,8 @@ function profileSettings() {
         return;
 
       }
+      // all is greate : add user email to the new user payload :
+      currentUserPayload.email = inputEmail;
     }
     // check if the new password is
     if( isPasswordChange ){
@@ -206,13 +209,93 @@ function profileSettings() {
           config
         ).then(
           response => {
-            console.log( response );
-            setIsloading(false);
+            // check response state : 
+            if ( response.data.message === "success"){
+              // the response geted successfully :
+              // check state of isEquale status : 
+              if ( response.data.isEquales ){
+                // set error state : 
+                setIsloading(false);
+                setIsError(true);
+                setAlertMessage("the new password hould be different than the previous ");
+                // set atime out : 
+                setTimeout(
+                  ()=>{
+                    setIsError(false);
+                    setAlertMessage('');
+                    // cleare the password field : 
+                    userPassword.current.value = "";
+                    passwordConfirme.current.value = "";
+                    // update the isPassword change state :
+                    setIsPasswordChange(false);
+                  },2500
+                )
+              }
+            }
           }
         ).catch( err => {
           console.error( err );
+          setIsloading(false);
         });
+        // all is greate add password to current user : 
+        currentUserPayload.password = inputPassword;
     }
+    // get the barrer token to handel the put request :
+    const { AuthToken, UserId } = window.localStorage;
+    // check the auth token: 
+    var barrer = "Barer ";
+    if(AuthToken[0] === '"' && AuthToken[AuthToken.length - 1] === '"'){
+      let updatedToken = AuthToken.slice(1,-1);
+      barrer += updatedToken;
+    }
+    else{
+      barrer += AuthToken;
+    }
+    // create a config object :
+    var config = {
+      'headers':{
+        'Authorization': barrer,
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      }
+    };
+    // send request :  my user payload is ready : 
+    axios.put(
+      `http://localhost:8080/api/manager/feeds/${UserId}`,
+      currentUserPayload,
+      config
+    ).then(
+      response => {
+        // check the response state : 
+        if ( response.data.message === 'Success'){
+          // current user updated successfully
+          setIsNotif(true);
+          setAlertMessage("User updated successfully , redirect to login page");
+          setTimeout(
+            ()=>{
+              setIsNotif(false);
+              setAlertMessage("");
+              // cleare the auth token : 
+              window.localStorage.removeItem('AuthToken');
+              navigate('/');
+            },2500
+          );
+        }
+      }
+    ).catch( err => { 
+      console.error( err );
+      // set a error state : 
+      setIsError( true );
+      setAlertMessage("Erro update user infromations , try later.");
+      setTimeout(
+        ()=>{
+          setIsError(false);
+          setAlertMessage("");
+          navigate("/settings");
+        },2500
+      );
+    });
+
   }
   // fetch the current usr : 
   useEffect(
@@ -260,10 +343,26 @@ function profileSettings() {
           }
         ).catch( err => {
           console.error( err );
+          setIsError( true );
+          setAlertMessage('Session Error occurred , please try again later ');
+          setTimeout(
+            ()=>{
+              setIsError(false);
+              setAlertMessage("");
+              navigate('/');
+            },2500
+          );
         });
       }catch( error ){
-        console.error()
-        navigate('/');
+        setIsError( true );
+        setAlertMessage('Session Error occurred , please try again later ');
+        setTimeout(
+          ()=>{
+            setIsError(false);
+            setAlertMessage("");
+            navigate('/');
+          },2500
+        );
       }
     },[]);
   
@@ -290,6 +389,19 @@ function profileSettings() {
           (
             <Container maxW="100%">
                 <Alert status='warning' my={0}>
+                  <AlertIcon />
+                  <AlertTitle>
+                    { AlertMessage }
+                  </AlertTitle>
+              </Alert>
+            </Container>
+            
+          )
+        }
+        {isNotif && 
+          (
+            <Container maxW="100%">
+                <Alert status='success' my={0}>
                   <AlertIcon />
                   <AlertTitle>
                     { AlertMessage }
