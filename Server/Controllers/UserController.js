@@ -38,6 +38,15 @@ const UpdateUserController = async ( req, res) => {
     }
     // get the target user : 
     try{
+        // check if there is a password into body :
+        const pswd = req.body.password;
+        if( pswd ){
+            const newPswdHashed  = await GenerateHashedPassword( pswd );
+            if( !newPswdHashed ){
+                throw new Error ("Can not hash password ");
+            }
+            req.body.password = newPswdHashed;
+        };
         const user_to_update = await User.findByIdAndUpdate( 
             id, 
             req.body,
