@@ -47,7 +47,9 @@ export default function SimpleSidebar({ children }) {
         autoFocus={false}
         isOpen={isOpen}
         placement="right"
-        size="full">
+        size="full" 
+        m="15"
+        >
             <DrawerContent>
                 <SidebarContent />
             </DrawerContent>
