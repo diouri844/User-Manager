@@ -32,8 +32,6 @@ import { Container,
   import axios from 'axios';
 
 
-
-
 function profileSettings() {
   // set used state :
   const [isloading, setIsloading] = useState(false);
