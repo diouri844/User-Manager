@@ -15,6 +15,7 @@ const bodyparser = require('body-parser');
 
 const AuthRouter = require('./Routes/Auth');
 const UserRouter = require('./Routes/User');
+const GigaRouter = require('./Routes/Giga');
 
 const cors = require('cors');
 const manageCors = require('./middleware/Cors');
@@ -40,7 +41,8 @@ my_server.use(bodyparser.json())
 
 
 my_server.use(
-    '/api/users',AuthRouter
+    '/api/users',
+    AuthRouter
 );
 
 
@@ -51,6 +53,11 @@ my_server.use(
     UserRouter
 );
 
+// add giga crud router : 
+my_server.use(
+    '/api/publications',
+    GigaRouter
+);
 
 
 // confing my server : node
