@@ -26,7 +26,8 @@ const UserSchema = mongoose.Schema({
     },
     role:{
         type:String,
-        required:true
+        required:true,
+        default:UserRole.stuff
     },
     password: {
         type:String,
@@ -34,10 +35,7 @@ const UserSchema = mongoose.Schema({
     }
 });
 
-
-
 // create a static method fired before each registration : 
-
 
 UserSchema.pre('save', async function(next) {
     try{
