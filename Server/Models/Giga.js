@@ -8,7 +8,8 @@ const mongoose = require('mongoose');
 const GigaSchema = mongoose.Schema({
     title:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     area:{
         type:String,
@@ -40,8 +41,6 @@ const GigaSchema = mongoose.Schema({
         default:0
     }
 });
-
-
 
 // create and export a model from the created schema : 
 
