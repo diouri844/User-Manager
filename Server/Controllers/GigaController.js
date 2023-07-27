@@ -2,15 +2,13 @@
 
 
 const { Giga } = require('../Models/Giga');
+const { User } = require('../Models/User');
 //const { ValideObjectId } = require("../Validations/ValidateUser");
 const { ValidateGigaPayload } = require('../Validations/ValidateGiga');
 // create a async handelr to get all the new gigs added from user in the same circle :
 
 const getGigsController = async ( req, res) =>{
     const fetchresult = await Giga.find({});
-    console.log(
-        req.user_token
-    );
     res.status(200).json(
         {
             message:'Success',
@@ -61,9 +59,113 @@ const createGigsController = async ( req, res) =>{
     }
 };
 
+const getGigaAuthorInfoController = async (req, res)=>{
+    // extrqct the giga id from request params :
+    const id = req.params.id;
+    const target = await Giga.findById(id);
+    if ( !target ){
+        res.status(404).json({
+            message: "Giga not found"
+        });
+    }
+    // all is great : 
+    const authorId = target.author_id;
+    const author = await User.findById(authorId);
+    if (!author) {
+        res.status(404).json({
+            message: "Author not found"
+        });
+    }
+    res.status(200).json({
+        message: "Success",
+        Author: author
+    });
+};
+
+const getMyGigsController = async ( req, res) =>{
+    // get the current User id from token : 
+    const userId = req.user_token.id;
+    // get all the gigas of this user :
+    const gigas = await Giga.find({ author_id: userId });
+    res.status(200).json(
+        {
+            message: "Success",
+            gigas
+        }
+    );
+};
+
+
+const deleteGigsController = async (req, res) => {
+    const id = req.params.id;
+    try{
+        const target = await Giga.findByIdAndDelete(id);
+        if (!target ){
+            res.status(404).json({
+                message: "Error",
+                Giga: null
+            });
+        }
+        res.status(200).json({
+            message: "Success",
+            Giga: target
+        })
+    }catch( err ){
+        console.error(err);
+        res.status(400).json({
+            message: "Error"
+        });
+    }
+};
+
+const likeGigaController = async (req, res)=> {
+    // extract the giga id from request params :
+    const id = req.params.id;
+    const target = await Giga.findById(id);
+    if (!target ){
+        res.status(404).json({
+            message: "Giga not found"
+        });
+    }
+    // update the giga likes numbers :
+    target.likes = target.likes + 1;
+    await target.save();
+    res.status(200).json({
+        message: "Success",
+        Giga: target
+    });
+}
+
+
+const dislikeGigaController = async (req,res)=> {
+    // extract the giga id from request params :
+    const id = req.params.id;
+    const target = await Giga.findById(id);
+    if (!target ){
+        res.status(404).json({
+            message: "Giga not found"
+        });
+    }
+    // update the giga likes numbers :
+    if (target.likes > 0) 
+    {
+        target.likes = target.likes - 1;
+        await target.save();
+    }
+    res.status(200).json({
+        message: "Success",
+        Giga: target
+    });
+}
+
 
 
 module.exports = {
     getGigsController,
-    createGigsController
+    createGigsController,
+    getGigaAuthorInfoController,
+    getMyGigsController,
+    likeGigaController,
+    dislikeGigaController,
+    deleteGigsController
 };
