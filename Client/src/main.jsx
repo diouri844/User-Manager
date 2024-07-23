@@ -4,7 +4,7 @@ import App from './App'
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from '@chakra-ui/react'
-// import MyRouter provider 
+// import MyRouter provider
 
 import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ import Feeds from './pages/Feeds';
 import { Settings, Explore, Logout } from './components';
 
 
-// define my router system : 
+// define my router system :
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     path:"/explore",
     element:<Explore />
   },
-  // add logout handler : 
+  // add logout handler :
   {
     path:"logout",
     element:<Logout />
@@ -57,6 +57,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <RouterProvider router={router} />
         <App />
       </ChakraProvider>
-        
+
   </React.StrictMode>
 )
