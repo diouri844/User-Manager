@@ -1,5 +1,5 @@
-const { InserNewUser, 
-        ChechUser, 
+const { InserNewUser,
+        ChechUser,
         CheckPassword  } = require('../DB-Config/UserManager');
 
 const { ValidateUserForm } = require('../Validations/ValidateUser');
@@ -9,7 +9,7 @@ const { generateAccessToken } = require("../Helpers/JwtManager");
 const LoginController = async (req,res )=>{
     // export name email password from req.body :
     const { name, password } = req.body;
-    // trye to insert my user target : 
+    // trye to insert my user target :
     const {user,message,token ,connected } = await ChechUser(
         name,
         password,
@@ -25,11 +25,11 @@ const LoginController = async (req,res )=>{
 }
 
 const RegisterController = async (req,res) =>{
-    // get body : 
-    // check user format  
+    // get body :
+    // check user format
     const { state , details } = ValidateUserForm(req.body);
     if ( ! state ){
-        // there is a error message into details object : 
+        // there is a error message into details object :
         res.status(501).json(
             {
                 message: details,
@@ -45,7 +45,7 @@ const RegisterController = async (req,res) =>{
         role,
         email
     );
-    // genrate a access token for current logged user : 
+    // genrate a access token for current logged user :
     if ( response.state === 200 ){
         const token = generateAccessToken(response.new_user.name);
         res.send(
@@ -70,15 +70,15 @@ const RegisterController = async (req,res) =>{
 
 
 
-// create a controller to handel a user check new vs old password : 
+// create a controller to handel a user check new vs old password :
 
 
 const CheckPasswordController = async (req,res) =>{
-    // get the new password from the request body : 
+    // get the new password from the request body :
     const { password } = req.body;
-    // get user id from the request parameters : 
+    // get user id from the request parameters :
     const userId = req.params.userId;
-    // check password : 
+    // check password :
     const { state,
             message,
             isEquales } = await CheckPassword(password, userId);
@@ -89,11 +89,7 @@ const CheckPasswordController = async (req,res) =>{
 };
 
 
-
-
-
-
-module.exports = { 
+module.exports = {
     LoginController,
     RegisterController,
     CheckPasswordController
