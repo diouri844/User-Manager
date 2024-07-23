@@ -1,4 +1,4 @@
-// import layout : 
+// import layout :
 import { defaultLayout as Layout } from '../layouts';
 import { Alert, AlertIcon, AlertTitle, Container, VStack } from '@chakra-ui/react';
 import { FeedList, FeedToolBar } from '../components';
@@ -7,19 +7,19 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Feeds() {
-  // set states  : 
+  // set states  :
   const [isSessionError, setIsSessionError] = useState(false);
   const [alertmessage , setAlertMessage] = useState("");
   const navigation = useNavigate();
-  // check state on load : 
+  // check state on load :
   useEffect(
     ()=>{
-      // update page title : 
+      // update page title :
       document.title = "Latest Feeds";
-      // get the id and authToken from the localStorage : 
+      // get the id and authToken from the localStorage :
       try{
         const { AuthToken, UserId  } = window.localStorage;
-        // set the barrer token for the check : 
+        // set the barrer token for the check :
         var barrer = "Barer ";
         if(AuthToken[0] === '"' && AuthToken[AuthToken.length - 1] === '"'){
           let updatedToken = AuthToken.slice(1,-1);
@@ -28,7 +28,7 @@ function Feeds() {
         else{
           barrer += AuthToken;
         }
-        // set the config request header : 
+        // set the config request header :
         const config = {
           'headers':{
             'Authorization': barrer,
@@ -48,7 +48,7 @@ function Feeds() {
               setAlertMessage(" Session error occured , please logged-in ");
               setTimeout(
                 ()=>{
-                  // cleare the fieald and states : 
+                  // cleare the fieald and states :
                   setIsSessionError(false);
                   setAlertMessage("");
                   navigation('/');
@@ -63,7 +63,7 @@ function Feeds() {
         setAlertMessage(" Session error , Not Authorized ");
         setTimeout(
           ()=>{
-            // cleare the fieald and states : 
+            // cleare the fieald and states :
             setIsSessionError(false);
             setAlertMessage("");
             navigation('/');
@@ -72,10 +72,10 @@ function Feeds() {
       }
     },[]
   );
-  
+
   if ( isSessionError ){
     return (
-      <Container 
+      <Container
         my={10}
         mx={250}
         p={12}
@@ -103,16 +103,16 @@ function Feeds() {
 
   return (
       <Layout >
-        <Container 
+        <Container
         mt={1}
         mx={200}
         p={12}
         >
         <VStack spacing={3}>
-          <FeedToolBar  
+          <FeedToolBar
           />
-          <FeedList 
-            isAdmin={true} 
+          <FeedList
+            isAdmin={true}
           />
         </VStack>
         </Container>
