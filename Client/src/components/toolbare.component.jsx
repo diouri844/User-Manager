@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { Tooltip, HStack  } from '@chakra-ui/react';
-import {    AddIcon, 
-            EditIcon, 
-            SearchIcon, 
-            DeleteIcon, 
+import {    AddIcon,
+            EditIcon,
+            SearchIcon,
+            DeleteIcon,
             StarIcon } from '@chakra-ui/icons';
 
 
@@ -24,77 +24,82 @@ function toolbare() {
     mt={-20}
     mx={15}
     spacing={12}>
-        <Tooltip 
-            hasArrow 
-            label='Search for a specific feed ' 
-            bg='gray.100' 
+        <Tooltip
+            hasArrow
+            label='Search for a specific feed '
+            bg='gray.100'
             color='black'
             placement='top'
             onClick={()=> console.log("search for a specific feed ")}
             >
             <SearchIcon
-                color='gray.700'  
+                color='gray.700'
                 boxSize={4}
-            /> 
+                cursor={"pointer"}
+            />
         </Tooltip>
 
-        <Tooltip 
-            hasArrow 
-            label='Add new feed' 
-            bg='gray.100' 
+        <Tooltip
+            hasArrow
+            label='Add new feed'
+            bg='gray.100'
             color='black'
             placement='top'
             onClick={()=> console.log("Add new feed")}
             >
-            <AddIcon 
+            <AddIcon
                 color='gray.700'
-                boxSize={4} 
-            /> 
+                boxSize={4}
+                cursor={"pointer"}
+            />
         </Tooltip>
 
-        <Tooltip 
-            hasArrow 
-            label='My feeds' 
-            bg='gray.100' 
+        <Tooltip
+            hasArrow
+            label='My feeds'
+            bg='gray.100'
             color='black'
             placement='top'
             onClick={()=> console.log("My feeds")}
             >
             <EditIcon
-                color='gray.700' 
-                boxSize={4} 
-            /> 
+                color='gray.700'
+                boxSize={4}
+                cursor={"pointer"}
+            />
         </Tooltip>
 
-        <Tooltip 
-            hasArrow 
-            label='Deleted feeds' 
-            bg='gray.100' 
+        <Tooltip
+            hasArrow
+            label='Deleted feeds'
+            bg='gray.100'
             color='black'
             placement='top'
             onClick={()=> console.log("Deleted feeds")}
             >
-            <DeleteIcon 
+            <DeleteIcon
                 color='gray.700'
-                boxSize={4} 
-            /> 
+                boxSize={4}
+                cursor={"pointer"}
+            />
         </Tooltip>
 
-        <Tooltip 
-            hasArrow 
-            label='Stared feeds' 
-            bg='gray.100' 
+        <Tooltip
+            hasArrow
+            label='Stared feeds'
+            bg='gray.100'
             color='black'
             placement='top'
             onClick={()=> console.log("Stared feeds")}
             >
-            <StarIcon 
+            <StarIcon
                 color='gray.700'
-                boxSize={4} 
-            /> 
+                boxSize={4}
+                cursor={"pointer"}
+            />
         </Tooltip>
     </HStack>
-    
+
 
     );
 }
