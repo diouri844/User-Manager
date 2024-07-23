@@ -5,7 +5,7 @@ const express = require('express');
 // import morgan for midellware
 const morgan = require('morgan');
 
-// import parser module : 
+// import parser module :
 const bodyparser = require('body-parser');
 
 
@@ -23,7 +23,7 @@ const manageCors = require('./middleware/Cors');
 const { MakeConnexion  } = require("./DB-Config/DBManager");
 
 
-// create my server application : 
+// create my server application :
 
 my_server = express();
 my_server.use(cors());
@@ -32,7 +32,7 @@ my_server.use((req, res, next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 });
-// use morgan : 
+// use morgan :
 my_server.use(morgan('tiny'));
 my_server.use(bodyparser.urlencoded({extended:true}));
 my_server.use(bodyparser.json())
@@ -53,7 +53,7 @@ my_server.use(
     UserRouter
 );
 
-// add giga crud router : 
+// add giga crud router :
 my_server.use(
     '/api/publications',
     GigaRouter
@@ -66,4 +66,3 @@ my_server.listen(8080, async ()=> {
     console.log( "the shit happen  at http://localhost:8080  ");
     await MakeConnexion();
 });
-
