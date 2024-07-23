@@ -4,10 +4,10 @@ require('dotenv').config();
 
 
 
-// create connexion  : 
+// create connexion  :
 
 const MakeConnexion = async ()=>{
-    // get my env uri : 
+    // get my env uri :
     const db_uri =  process.env.MONGO_DB_URI;
     // connect to uri target :
     await mongoose.connect(
@@ -18,22 +18,6 @@ const MakeConnexion = async ()=>{
         )
     ).catch( err => console.error(" Cann not make connexion : ", err));
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 module.exports = {
