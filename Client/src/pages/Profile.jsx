@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import myAxiosInstance from "../providers/axios.provider";
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Container, Grid, Heading, Text } from '@chakra-ui/react';
 import { SocialProfileWithImage, SimpleSidebar } from '../components';
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ function Profile() {
     const navigation = useNavigate();
     useEffect(
         ()=>{
-            // update doc title : 
+            // update doc title :
             document.title = `My Profile`;
             try{
                 const { AuthToken, UserId} = window.localStorage;
@@ -36,12 +36,12 @@ function Profile() {
                         'Accept': '*/*'
                     }
                 };
-                // try to get the user by id : 
-                axios.get(`http://localhost:8080/api/manager/feeds/${UserId}`,
+                // try to get the user by id :
+                myAxiosInstance.get(`manager/feeds/${UserId}`,
                 config
                 ).then(
                     res => {
-                        // check state : 
+                        // check state :
                         if ( res.data.message === 'Success'){
                             // set user state :
                             // update it :
@@ -50,7 +50,7 @@ function Profile() {
                             setUserRole(res.data.user.role);
                         }
                     }
-                ).catch( err => 
+                ).catch( err =>
                     {
                         setSessionError(true);
                         console.error(
@@ -59,12 +59,12 @@ function Profile() {
                         setTimeout(
                             ()=>{
                                 setSessionError(false);
-                                // redirect to login page : 
+                                // redirect to login page :
                                 navigation('/');
                             },2500
                         );
-                    }    
-                );    
+                    }
+                );
             }catch ( err ){
                 setSessionError(true);
                 console.error(
@@ -73,11 +73,11 @@ function Profile() {
                 setTimeout(
                     ()=>{
                         setSessionError(false);
-                        // redirect to login page : 
+                        // redirect to login page :
                         navigation('/');
                     },2500
                 );
-            } 
+            }
         },[]
     );
     const user = {
@@ -88,7 +88,7 @@ function Profile() {
   return (
     <>
          <Layout>
-            { isSessionError && 
+            { isSessionError &&
                 <Alert className='absolute'
                 status='error'
                 variant='solid'
@@ -99,7 +99,7 @@ function Profile() {
                 height='300px'>
                     <AlertIcon boxSize='60px' mr={0} />
                     <AlertTitle  mt={4} mb={1} fontSize='lx' >
-                        Eroor occured : 
+                        Eroor occured :
                     </AlertTitle>
                     <AlertDescription maxWidth='xl' >
                         Session error , authentification required please try again
@@ -107,7 +107,7 @@ function Profile() {
                 </Alert>
             }
             {!isSessionError &&
-                    <SocialProfileWithImage 
+                    <SocialProfileWithImage
                     name={ user.name }
                     email={ user.email }
                     role={ user.role }
@@ -115,7 +115,7 @@ function Profile() {
             }
         </Layout>
     </>
-    
+
   )
 }
 
