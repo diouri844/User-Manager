@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 // import layout  :
-
 import { defaultLayout as Layout } from '../../layouts';
 // import shakara component
 import { Container,
@@ -29,7 +28,7 @@ import { Container,
 
 
   // import axios :
-  import axios from 'axios';
+  import myAxiosInstance from "../../providers/axios.provider";
 
 
 function profileSettings() {
@@ -201,8 +200,8 @@ function profileSettings() {
         // extract userid from localstorage:
         const { UserId } = window.localStorage;
         // send check request :
-        axios.post(
-          `http://localhost:8080/api/users/checkPassword/${UserId}`,
+        myAxiosInstance.post(
+          `users/checkPassword/${UserId}`,
           payload,
           config
         ).then(
@@ -258,8 +257,8 @@ function profileSettings() {
       }
     };
     // send request :  my user payload is ready :
-    axios.put(
-      `http://localhost:8080/api/manager/feeds/${UserId}`,
+    myAxiosInstance.put(
+      `manager/feeds/${UserId}`,
       currentUserPayload,
       config
     ).then(
@@ -321,8 +320,8 @@ function profileSettings() {
           }
         };
         // send request to get current user info:
-        axios.get(
-          `http://localhost:8080/api/manager/feeds/${UserId}`,
+        myAxiosInstance.get(
+          `manager/feeds/${UserId}`,
           config,
         ).then(
           response => {
