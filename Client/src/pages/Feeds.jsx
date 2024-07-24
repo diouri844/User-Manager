@@ -3,7 +3,7 @@ import { defaultLayout as Layout } from '../layouts';
 import { Alert, AlertIcon, AlertTitle, Container, VStack } from '@chakra-ui/react';
 import { FeedList, FeedToolBar } from '../components';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import  myAxiosInstance from "../providers/axios.provider";
 import { useNavigate } from 'react-router-dom';
 
 function Feeds() {
@@ -36,7 +36,7 @@ function Feeds() {
             'Accept': '*/*'
           }
         };
-        axios.get(`http://localhost:8080/api/manager/feeds/${UserId}`,
+        myAxiosInstance.get(`manager/feeds/${UserId}`,
           config
         ).then(
           response => {
