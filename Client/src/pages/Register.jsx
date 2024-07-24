@@ -19,7 +19,7 @@ import {
 
 
   import { AtSignIcon, LockIcon, EmailIcon } from '@chakra-ui/icons';
-  import axios from "axios";
+  import myAxiosInstance from "../providers/axios.provider";
   import { Link } from "react-router-dom";
   import { useToast } from '@chakra-ui/react'
   import { useRef, useState, useEffect } from 'react';
@@ -64,8 +64,8 @@ import {
             payload
         );
         // send the post request to the server
-        axios.post(
-          "http://localhost:8080/api/users/register",
+        myAxiosInstance.post(
+          "users/register",
           payload,
           config
         ).then(
