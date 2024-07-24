@@ -19,7 +19,7 @@ import {
 
 
 import { AtSignIcon, LockIcon } from '@chakra-ui/icons';
-import axios from "axios"; 
+import myAxiosInstance from "../providers/axios.provider";
 //import GenerateHashedPassword from '../tools/Hashing';
 import { Link, useNavigate  } from "react-router-dom";
 import { useEffect, useRef, useState } from 'react';
@@ -39,13 +39,13 @@ export default function Login() {
     },[]);
 
     async function  HandelSubmit(){
-        // get current values : 
+        // get current values :
         setSending(true);
         // get input data :
         const sended_name = Name.current.value;
         const sended_password = Password.current.value;
         // create a json object to send to the server endpoit ;
-        //  
+        //
         const Payload =  {
           name: sended_name,
           password : sended_password
@@ -56,31 +56,31 @@ export default function Login() {
             'Accept': '*/*'
           }
         };
-        // send post request : 
-        const response = await axios.post(
-          "http://localhost:8080/api/users/login",
+        // send post request :
+        const response = await myAxiosInstance.post(
+          "users/login",
           Payload,
           config
         );
         setSending(false);
         if ( response.data.connected ) {
           setSuccessState(true);
-          setUserState({...response.data}); 
+          setUserState({...response.data});
           const token = response.data.token;
           const user_id = response.data.user._id
-          // dislay a popup for auth status : 
+          // dislay a popup for auth status :
           setTimeout(
             ()=>{
-              // clear : 
+              // clear :
               Name.current.value = "";
               Password.current.value = "";
-              // reset states : 
+              // reset states :
               setSuccessState(false);
-              // set a global state : 
+              // set a global state :
               window.localStorage.setItem("AuthToken",token);
               window.localStorage.setItem("UserId",user_id);
               // redirect the the dash :
-              myNavigate('/profile'); 
+              myNavigate('/profile');
             },2500
           );
         }
@@ -90,10 +90,10 @@ export default function Login() {
           setErrorState(true);
           setTimeout(
             ()=>{
-              // clear : 
+              // clear :
               Name.current.value = "";
               Password.current.value = "";
-              // reset states : 
+              // reset states :
               setErrorState(false);
             },2500
           );
@@ -118,15 +118,15 @@ export default function Login() {
               <AlertTitle>{ UserState?.message }</AlertTitle>
               {UserState?.connected && (
                 <AlertDescription>
-                  Welcome back : { UserState?.user?.name } 
-                </AlertDescription>  
+                  Welcome back : { UserState?.user?.name }
+                </AlertDescription>
               )}
-              
+
           </Alert>
           )
         }
         <Stack spacing="8">
-          <Heading size={{ base: 'sm', md: 'md' }} color='black'>  
+          <Heading size={{ base: 'sm', md: 'md' }} color='black'>
           Welcome Back
           </Heading>
         <Box
@@ -136,7 +136,7 @@ export default function Login() {
           boxShadow={{ base: 'none', sm: 'md' }}
           borderRadius={{ base: 'none', sm: 'xl' }}
         >
-          
+
           <Stack spacing="6">
             <Stack spacing="5">
               <FormControl>
@@ -156,7 +156,7 @@ export default function Login() {
                 <Input id="password" type="password" ref={Password} />
               </FormControl>
             </Stack>
-            
+
             <HStack justify="space-between">
               <Button variant="link" colorScheme="blue" size="sm">
                 Forgot password?
@@ -178,7 +178,7 @@ export default function Login() {
                   //console.log(" this is my submit handler ");
                   HandelSubmit();
                 }
-              } 
+              }
               colorScheme='blue' variant='solid'>
                   { sending && <Spinner color='white' /> }
                   { !sending && (<span>Sign in</span>) }
@@ -187,5 +187,5 @@ export default function Login() {
           </Stack>
         </Box>
       </Stack>
-  </Container>  
+  </Container>
 )}
